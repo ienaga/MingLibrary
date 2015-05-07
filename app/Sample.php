@@ -13,9 +13,9 @@ class Sample extends MingBase
      * @param int    $rate
      * @param int    $version
      */
-    public function __constructor($width = 240, $height = 240, $backgroundColor = '#000000', $rate = 12, $version = 4)
+    public function __construct($width = 240, $height = 240, $backgroundColor = '#000000', $rate = 12, $version = 4)
     {
-        parent::__constructor($width, $height, $backgroundColor, $rate, $version);
+        parent::__construct($width, $height, $backgroundColor, $rate, $version);
     }
 }
 
