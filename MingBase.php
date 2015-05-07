@@ -59,6 +59,8 @@ class MingBase
      */
     public function __construct($width = 240, $height = 240, $backgroundColor = '#000000', $rate = 12, $version = 4)
     {
+        spl_autoload_register();
+
         $this->setWidth($width);
         $this->setHeight($height);
         $this->setBackgroundColor($backgroundColor);
@@ -171,7 +173,7 @@ class MingBase
     }
 
     /**
-     * @param  mixed $name
+     * @param  string $name
      * @return array
      */
     public function getClip($name)
@@ -322,5 +324,4 @@ class MingBase
     {
         $this->getMingBuild()->output($swf);
     }
-
 }

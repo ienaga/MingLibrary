@@ -2,6 +2,7 @@
 
 namespace MingLibrary;
 
+
 class MingUtil
 {
     /**
@@ -24,11 +25,21 @@ class MingUtil
     }
 
     /**
+     * @return object
+     */
+    public static function getConfig()
+    {
+        return \Phalcon\DI::getDefault()->get('config')->get('ming');
+    }
+
+    /**
      * @return string
      */
     public static function getSwfDir()
     {
-        return \Phalcon\DI::getDefault()->get('config')->get('ming')->get('swf')->get('dir');
+        $config = self::getConfig();
+        return $config['swf']['dir'];
+        // return self::getConfig()->get('swf')->get('dir');
     }
 
     /**
@@ -36,7 +47,9 @@ class MingUtil
      */
     public static function getBitmapDir()
     {
-        return \Phalcon\DI::getDefault()->get('config')->get('ming')->get('bitmap')->get('dir');
+        $config = self::getConfig();
+        return $config['bitmap']['dir'];
+        // return self::getConfig()->get('bitmap')->get('dir');
     }
 
     /**
