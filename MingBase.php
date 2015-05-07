@@ -198,17 +198,17 @@ class MingBase
     /**
      * @param null   $name
      * @param string $path
-     * @param float  $x
-     * @param float  $y
+     * @param int    $x
+     * @param int    $y
      * @param float  $xScale
      * @param float  $yScale
      * @param int    $alpha
      * @param int    $angle
      * @param array  $actions
      */
-    public function add($name = null, $path = '', $x = 0.0, $y = 0.0, $xScale = 1.0, $yScale = 1.0, $alpha = 0, $angle = 100, $actions = array())
+    public function add($name = null, $path = '', $x = 0, $y = 0, $xScale = 1.0, $yScale = 1.0, $alpha = 0, $angle = 100, $actions = array())
     {
-        $this->setClips(func_get_args());
+        $this->setClips($name, $path, $x, $y, $xScale, $yScale, $alpha, $angle, $actions);
     }
 
     /**
@@ -262,7 +262,7 @@ class MingBase
         if (!isset($clips[$name]))
             $mingSprite = new MingSprite();
 
-        $mingSprite->add(func_get_args());
+        $mingSprite->add($name, $path, $x, $y, $xScale, $yScale, $alpha, $angle, $actions);
 
         $clips[$name] = $mingSprite;
     }
