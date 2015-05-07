@@ -2,6 +2,7 @@
 
 namespace MingLibrary;
 
+use \SWFMovie;
 use \MingLibrary\MingUtil;
 use \MingLibrary\MingBuild;
 use \Exception;
@@ -44,13 +45,19 @@ class MingBase
     private $clips = array();
 
     /**
+     * @var MingBuild
+     */
+    private $mingBuild = null;
+
+
+    /**
      * @param int    $width
      * @param int    $height
      * @param string $backgroundColor
      * @param int    $rate
      * @param int    $version
      */
-    public function __constructor($width = 240, $height = 240, $backgroundColor = '#000000', $rate = 12, $version = 4)
+    public function __construct($width = 240, $height = 240, $backgroundColor = '#000000', $rate = 12, $version = 4)
     {
         $this->setWidth($width);
         $this->setHeight($height);
@@ -163,18 +170,27 @@ class MingBase
         return $this->clips;
     }
 
+    /**
+     * @param  mixed $name
+     * @return array
+     */
+    public function getClip($name)
+    {
+        return (isset($this->clips[$name])) ? $this->clips[$name] : array();
+    }
+
     /**.
      * @param null  $name
      * @param mixed $obj
-     * @param float $x
-     * @param float $y
+     * @param int   $x
+     * @param int   $y
      * @param float $xScale
      * @param float $yScale
      * @param int   $alpha
      * @param int   $angle
      * @param array $actions
      */
-    public function setClips($name = null, $obj, $x = 0.0, $y = 0.0, $xScale = 1.0, $yScale = 1.0, $alpha = 0, $angle = 0, $actions = array())
+    public function setClips($name = null, $obj, $x = 0, $y = 0, $xScale = 1.0, $yScale = 1.0, $alpha = 0, $angle = 0, $actions = array())
     {
         $clips = $this->getClips();
 
@@ -221,7 +237,7 @@ class MingBase
         $clips = $this->getClips();
 
         if (!isset($clips[$name]))
-            throw new Exception('not found clip');
+            throw new Exception('not found clip name is: '.$name);
 
         $actions = $clips[$name]['actions'];
 
@@ -268,21 +284,43 @@ class MingBase
     }
 
     /**
-     * @return \SWFMovie
+     * @return MingBuild
      */
-    public function build()
+    public function getMingBuild()
     {
-        $mingBuild = new MingBuild($this->getWidth(), $this->getHeight(), $this->getBackgroundColor(), $this->getRate(), $this->getVersion());
-
-        return $mingBuild->build($this->getClips());
+        return $this->mingBuild;
     }
 
     /**
      * @param MingBuild $mingBuild
      */
-    public function output(MingBuild $mingBuild)
+    public function setMingBuild(MingBuild $mingBuild)
     {
-        $mingBuild->output($mingBuild);
+        $this->mingBuild = $mingBuild;
+    }
+
+    /**
+     * @return SWFMovie
+     */
+    public function build()
+    {
+        $mingBuild = new MingBuild();
+
+        $swfMovie = $mingBuild->init($this->getWidth(), $this->getHeight(), $this->getBackgroundColor(), $this->getRate(), $this->getVersion());
+
+        $swf =  $mingBuild->build($swfMovie, $this->getClips());
+
+        $this->setMingBuild($mingBuild);
+
+        return $swf;
+    }
+
+    /**
+     * @param SWFMovie $swf
+     */
+    public function output(SWFMovie $swf)
+    {
+        $this->getMingBuild()->output($swf);
     }
 
 }

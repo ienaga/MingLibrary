@@ -9,7 +9,6 @@ use \MingLibrary\MingUtil;
 
 class MingBitmap
 {
-
     /**
      * @var string
      */
@@ -18,7 +17,7 @@ class MingBitmap
     /**
      * @param string $path
      */
-    public function __constructor($path)
+    public function __construct($path)
     {
         $this->setPath($path);
     }
@@ -62,5 +61,4 @@ class MingBitmap
 
         return $sprite;
     }
-
 }

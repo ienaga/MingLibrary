@@ -12,24 +12,18 @@ use \MingLibrary\MingSprite;
 class MingBuild
 {
     /**
-     * @var SWFMovie
-     */
-    private $swf = null;
-
-    /**
      * @param int    $width
      * @param int    $height
      * @param string $backgroundColor
      * @param int    $rate
      * @param int    $version
+     * @return SWFMovie
      */
-    public function __constructor($width = 240, $height = 240, $backgroundColor = '#000000', $rate = 12, $version = 4)
+    public function init($width = 240, $height = 240, $backgroundColor = '#000000', $rate = 12, $version = 4)
     {
-        // init
         ming_useswfversion($version);
         ming_setscale(20);
 
-        // set
         $swf = new SWFMovie($version);
         $swf->setDimension($width, $height);
         $swf->setRate($rate);
@@ -42,7 +36,7 @@ class MingBuild
         // focus
         $swf->add(new SWFAction('_focusrect = false;'));
 
-        $this->swf = $swf;
+        return $swf;
     }
 
     /**
@@ -54,15 +48,14 @@ class MingBuild
     }
 
     /**
+     * @param  SWFMovie|SWFSprite
      * @param  array $clips
-     * @return SWFMovie
+     * @return SWFMovie|SWFSprite
      */
-    public function build($clips = array())
+    public function build($swf, $clips = array())
     {
-
-        $swf = $this->getSwf();
-
         $frameCount = count($clips);
+
         for ($frame = 0; $frame <= $frameCount; $frame++) {
 
             $swf->add(new SWFAction("stop();"));
@@ -103,14 +96,12 @@ class MingBuild
                 // action script
                 if (count($value['actions']) > 0) {
                     foreach ($value['actions'] as $action) {
-                        $obj->addAction(new SWFAction($action));
+                        $SWFDisplayItem->addAction(new SWFAction($action));
                     }
                 }
             }
 
-            if ($frame)
-                $swf->nextFrame();
-
+            $swf->nextFrame();
         }
 
         return $swf;
@@ -121,7 +112,6 @@ class MingBuild
      */
     public function output(SWFMovie $swf)
     {
-
         MingUtil::setHeader();
 
         $swf->output();
@@ -129,4 +119,12 @@ class MingBuild
         exit;
     }
 
+    /**
+     * @param SWFMovie $swf
+     * @param string   $path
+     */
+    public function save(SWFMovie $swf, $path)
+    {
+        $swf->save($path);
+    }
 }

@@ -2,10 +2,8 @@
 
 namespace MingLibrary;
 
-
 class MingUtil
 {
-
     /**
      * @var array
      */
