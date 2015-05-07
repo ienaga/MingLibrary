@@ -210,7 +210,7 @@ class MingBase
         if ($name)
             $name = count($clips[$this->getFrameCount()]);
 
-        $clips[$this->getFrameCount()][$name] = $arg;
+        $this->clips[$this->getFrameCount()][$name] = $arg;
     }
 
     /**
@@ -241,9 +241,14 @@ class MingBase
         if (!isset($clips[$name]))
             throw new Exception('not found clip name is: '.$name);
 
-        $actions = $clips[$name]['actions'];
+        $clip = $clips[$name];
+        $actions = $clip['actions'];
 
         $actions[] = $action;
+
+        $clip['actions'] = $actions;
+
+        $this->clips[$name] = $clip;
     }
 
     /**
@@ -282,7 +287,7 @@ class MingBase
 
         $mingSprite->add($name, $path, $x, $y, $xScale, $yScale, $alpha, $angle, $actions);
 
-        $clips[$name] = $mingSprite;
+        $this->clips[$name] = $mingSprite;
     }
 
     /**
