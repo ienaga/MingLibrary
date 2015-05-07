@@ -2,9 +2,8 @@
 
 namespace MingLibrary\App;
 
-use MingLibrary\MingBase;
 
-class Sample extends MingBase
+class Sample extends \MingLibrary\MingBase
 {
     /**
      * @param int    $width
@@ -17,5 +16,7 @@ class Sample extends MingBase
     {
         parent::__construct($width, $height, $backgroundColor, $rate, $version);
     }
+
+
 }
 
