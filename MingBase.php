@@ -59,13 +59,12 @@ class MingBase
      */
     public function __construct($width = 240, $height = 240, $backgroundColor = '#000000', $rate = 12, $version = 4)
     {
-        spl_autoload_register();
-
         $this->setWidth($width);
         $this->setHeight($height);
         $this->setBackgroundColor($backgroundColor);
         $this->setRate($rate);
         $this->setVersion($version);
+        $this->clips[0] = array();
     }
 
     /**
@@ -169,16 +168,15 @@ class MingBase
      */
     public function getClips()
     {
-        return $this->clips;
+        return $this->clips[$this->getFrameCount()];
     }
 
     /**
-     * @param  string $name
      * @return array
      */
-    public function getClip($name)
+    public function getBuildClips()
     {
-        return (isset($this->clips[$name])) ? $this->clips[$name] : array();
+        return $this->clips;
     }
 
     /**.
@@ -192,7 +190,7 @@ class MingBase
      * @param int   $angle
      * @param array $actions
      */
-    public function setClips($name = null, $obj, $x = 0, $y = 0, $xScale = 1.0, $yScale = 1.0, $alpha = 0, $angle = 0, $actions = array())
+    public function setClips($name = null, $obj, $x = 0, $y = 0, $xScale = 1.0, $yScale = 1.0, $alpha = 100, $angle = 0, $actions = array())
     {
         $clips = $this->getClips();
 
@@ -207,8 +205,8 @@ class MingBase
             'actions' => $actions,
         );
 
-        if ($name)
-            $name = count($clips[$this->getFrameCount()]);
+        if (!$name)
+            $name = count($clips);
 
         $this->clips[$this->getFrameCount()][$name] = $arg;
     }
@@ -224,7 +222,7 @@ class MingBase
      * @param int    $angle
      * @param array  $actions
      */
-    public function add($name = null, $path = '', $x = 0, $y = 0, $xScale = 1.0, $yScale = 1.0, $alpha = 0, $angle = 100, $actions = array())
+    public function add($name = null, $path = '', $x = 0, $y = 0, $xScale = 1.0, $yScale = 1.0, $alpha = 100, $angle = 0, $actions = array())
     {
         $this->setClips($name, $path, $x, $y, $xScale, $yScale, $alpha, $angle, $actions);
     }
@@ -248,7 +246,7 @@ class MingBase
 
         $clip['actions'] = $actions;
 
-        $this->clips[$name] = $clip;
+        $this->clips[$this->getFrameCount()][$name] = $clip;
     }
 
     /**
@@ -268,6 +266,21 @@ class MingBase
     }
 
     /**
+     * @param string $name
+     * @param int    $x
+     * @param int    $y
+     * @param float  $xScale
+     * @param float  $yScale
+     * @param int    $alpha
+     * @param int    $angle
+     * @param array  $actions
+     */
+    public function createSprite($name, $x = 0, $y = 0, $xScale = 1.0, $yScale = 1.0, $alpha = 100, $angle = 0, $actions = array())
+    {
+        $this->add($name, new MingSprite(), $x, $y, $xScale, $yScale, $alpha, $angle, $actions);
+    }
+
+    /**
      * @param null   $name
      * @param string $path
      * @param int    $x
@@ -282,12 +295,13 @@ class MingBase
     {
         $clips = $this->getClips();
 
-        if (!isset($clips[$name]))
-            $mingSprite = new MingSprite();
+        $mingSprite = $clips[$name];
+        if (!$mingSprite)
+            throw new Exception('not found sprite name is: '.$name);
 
         $mingSprite->add($name, $path, $x, $y, $xScale, $yScale, $alpha, $angle, $actions);
 
-        $this->clips[$name] = $mingSprite;
+        $this->clips[$this->getFrameCount()][$name] = $mingSprite;
     }
 
     /**
@@ -315,7 +329,7 @@ class MingBase
 
         $swfMovie = $mingBuild->init($this->getWidth(), $this->getHeight(), $this->getBackgroundColor(), $this->getRate(), $this->getVersion());
 
-        $swf =  $mingBuild->build($swfMovie, $this->getClips());
+        $swf =  $mingBuild->build($swfMovie, $this->getBuildClips());
 
         $this->setMingBuild($mingBuild);
 

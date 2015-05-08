@@ -5,6 +5,7 @@ namespace MingLibrary;
 use \SWFMovie;
 use \SWFPrebuiltClip;
 use \SWFAction;
+use \SWFSprite;
 use \MingLibrary\MingUtil;
 use \MingLibrary\MingBitmap;
 use \MingLibrary\MingSprite;
@@ -56,7 +57,7 @@ class MingBuild
     {
         $frameCount = count($clips);
 
-        for ($frame = 0; $frame <= $frameCount; $frame++) {
+        for ($frame = 0; $frame < $frameCount; $frame++) {
 
             $swf->add(new SWFAction("stop();"));
 
@@ -67,8 +68,18 @@ class MingBuild
 
                 if ($obj instanceof MingSprite || $obj instanceof MingBitmap) {
                     $addClip = $obj->build();
-                } else {
+                } else if ($obj != '') {
                     $addClip = new SWFPrebuiltClip(MingUtil::getSwfDir() . $obj);
+                } else {
+                    if ($swf instanceof SWFSprite && count($value['actions']) > 0) {
+                        $script = '';
+                        foreach ($value['actions'] as $action) {
+                            $script .= $action;
+                        }
+                        $swf->add(new SWFAction($action));
+                    }
+
+                    continue;
                 }
 
                 $SWFDisplayItem = $swf->add($addClip);
@@ -78,8 +89,7 @@ class MingBuild
                     $SWFDisplayItem->setName($name);
 
                 // move
-                if ($value['x'] != 0 || $value['y'] != 0)
-                    $SWFDisplayItem->moveTo($value['x'], $value['y']);
+                $SWFDisplayItem->moveTo($value['x'], $value['y']);
 
                 // scale
                 if ($value['xScale'] != 1.0 || $value['yScale'] !=  1.0)
@@ -95,9 +105,11 @@ class MingBuild
 
                 // action script
                 if (count($value['actions']) > 0) {
+                    $script = '';
                     foreach ($value['actions'] as $action) {
-                        $SWFDisplayItem->addAction(new SWFAction($action));
+                        $script .= $action;
                     }
+                    $SWFDisplayItem->addAction(new SWFAction($script), SWFACTION_ONLOAD);
                 }
             }
 

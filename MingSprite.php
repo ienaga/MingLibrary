@@ -13,6 +13,6 @@ class MingSprite extends MingBase
     {
         $mingBuild = new MingBuild();
 
-        return $mingBuild->build(new SWFSprite(), $this->getClips());
+        return $mingBuild->build(new SWFSprite(), $this->getBuildClips());
     }
 }
