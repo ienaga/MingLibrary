@@ -66,7 +66,10 @@ class MingBuild
 
                 $obj = $value['obj'];
 
-                if ($obj instanceof MingSprite || $obj instanceof MingBitmap) {
+                if ($obj instanceof MingSprite
+                    || $obj instanceof MingBitmap
+                    || $obj instanceof MingVariable
+                ) {
                     $addClip = $obj->build();
                 } else if ($obj != '') {
                     $addClip = new SWFPrebuiltClip(MingUtil::getSwfDir() . $obj);

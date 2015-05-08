@@ -5,7 +5,11 @@ namespace MingLibrary;
 use \SWFMovie;
 use \MingLibrary\MingUtil;
 use \MingLibrary\MingBuild;
+use \MingLibrary\MingBitmap;
+use \MingLibrary\MingSprite;
+use \MingLibrary\MingVariable;
 use \Exception;
+
 
 class MingBase
 {
@@ -302,6 +306,33 @@ class MingBase
         $mingSprite->add($name, $path, $x, $y, $xScale, $yScale, $alpha, $angle, $actions);
 
         $this->clips[$this->getFrameCount()][$name] = $mingSprite;
+    }
+
+    /**
+     * @param  string $name
+     */
+    public function createVariable($name = '')
+    {
+        $this->add($name, new MingVariable($name));
+    }
+
+    /**
+     * @param string $name
+     * @param string $key
+     * @param string $value
+     */
+    public function setVariable($name, $key, $value)
+    {
+        $clips = $this->getClips();
+
+        if (!isset($clips[$name])) {
+            $this->createVariable($name);
+            $clips = $this->getClips();
+        }
+
+        $mingVariable = $clips[$name]['obj'];
+
+        $mingVariable->add($key, $value);
     }
 
     /**
