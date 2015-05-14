@@ -270,18 +270,13 @@ class MingBase
     }
 
     /**
-     * @param string $name
-     * @param int    $x
-     * @param int    $y
-     * @param float  $xScale
-     * @param float  $yScale
-     * @param int    $alpha
-     * @param int    $angle
-     * @param array  $actions
+     * @param  string $name
+     * @return MingSprite
      */
-    public function createSprite($name, $x = 0, $y = 0, $xScale = 1.0, $yScale = 1.0, $alpha = 100, $angle = 0, $actions = array())
+    public function createSprite($name = '')
     {
-        $this->add($name, new MingSprite(), $x, $y, $xScale, $yScale, $alpha, $angle, $actions);
+        $this->add($name, new MingSprite($name));
+        return $this->getClips();
     }
 
     /**
@@ -299,21 +294,22 @@ class MingBase
     {
         $clips = $this->getClips();
 
-        $mingSprite = $clips[$name];
-        if (!$mingSprite)
-            throw new Exception('not found sprite name is: '.$name);
+        if (!isset($clips[$name]))
+            $clips = $this->createSprite($name);
+
+        $mingSprite = $clips[$name]['obj'];
 
         $mingSprite->add($name, $path, $x, $y, $xScale, $yScale, $alpha, $angle, $actions);
-
-        $this->clips[$this->getFrameCount()][$name] = $mingSprite;
     }
 
     /**
      * @param  string $name
+     * @return mixed
      */
     public function createVariable($name = '')
     {
         $this->add($name, new MingVariable($name));
+        return $this->getClips();
     }
 
     /**
@@ -325,10 +321,8 @@ class MingBase
     {
         $clips = $this->getClips();
 
-        if (!isset($clips[$name])) {
-            $this->createVariable($name);
-            $clips = $this->getClips();
-        }
+        if (!isset($clips[$name]))
+            $clips = $this->createVariable($name);
 
         $mingVariable = $clips[$name]['obj'];
 

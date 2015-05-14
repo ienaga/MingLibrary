@@ -64,24 +64,32 @@ class MingBuild
             $clip = $clips[$frame];
             foreach ($clip as $name => $value) {
 
+                // action script
+                $script = '';
+                if (count($value['actions']) > 0) {
+                    foreach ($value['actions'] as $action) {
+                        $script .= $action;
+                    }
+                }
+
                 $obj = $value['obj'];
 
                 if ($obj instanceof MingSprite
                     || $obj instanceof MingBitmap
                     || $obj instanceof MingVariable
                 ) {
+
                     $addClip = $obj->build();
+
+                    if ($script != '') {
+                        $addClip->add(new SWFAction($script));
+                    }
+
+                    $script = '';
+
                 } else if ($obj != '') {
                     $addClip = new SWFPrebuiltClip(MingUtil::getSwfDir() . $obj);
                 } else {
-                    if ($swf instanceof SWFSprite && count($value['actions']) > 0) {
-                        $script = '';
-                        foreach ($value['actions'] as $action) {
-                            $script .= $action;
-                        }
-                        $swf->add(new SWFAction($action));
-                    }
-
                     continue;
                 }
 
@@ -106,14 +114,10 @@ class MingBuild
                 if ($value['alpha'] < 100)
                     $SWFDisplayItem->multColor(1, 1, 1, $value['alpha'] / 100);
 
-                // action script
-                if (count($value['actions']) > 0) {
-                    $script = '';
-                    foreach ($value['actions'] as $action) {
-                        $script .= $action;
-                    }
-                    $SWFDisplayItem->addAction(new SWFAction($script), SWFACTION_ONLOAD);
-                }
+            }
+
+            if ($script != '') {
+                $swf->add(new SWFAction($script));
             }
 
             $swf->nextFrame();
