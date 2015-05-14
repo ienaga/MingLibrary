@@ -346,26 +346,26 @@ class MingBase
     }
 
     /**
-     * @return SWFMovie
+     * @return $this
      */
     public function build()
     {
         $mingBuild = new MingBuild();
 
-        $swfMovie = $mingBuild->init($this->getWidth(), $this->getHeight(), $this->getBackgroundColor(), $this->getRate(), $this->getVersion());
+        $mingBuild->init($this->getWidth(), $this->getHeight(), $this->getBackgroundColor(), $this->getRate(), $this->getVersion());
 
-        $swf =  $mingBuild->build($swfMovie, $this->getBuildClips());
+        $mingBuild->build($this->getBuildClips());
 
         $this->setMingBuild($mingBuild);
 
-        return $swf;
+        return $this;
     }
 
     /**
-     * @param SWFMovie $swf
+     * output
      */
-    public function output(SWFMovie $swf)
+    public function output()
     {
-        $this->getMingBuild()->output($swf);
+        $this->getMingBuild()->output();
     }
 }

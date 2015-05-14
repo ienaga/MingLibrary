@@ -13,12 +13,16 @@ use \MingLibrary\MingSprite;
 class MingBuild
 {
     /**
+     * @var SWFMovie
+     */
+    private $swf = null;
+
+    /**
      * @param int    $width
      * @param int    $height
      * @param string $backgroundColor
      * @param int    $rate
      * @param int    $version
-     * @return SWFMovie
      */
     public function init($width = 240, $height = 240, $backgroundColor = '#000000', $rate = 12, $version = 4)
     {
@@ -37,7 +41,7 @@ class MingBuild
         // focus
         $swf->add(new SWFAction('_focusrect = false;'));
 
-        return $swf;
+        $this->swf = $swf;
     }
 
     /**
@@ -53,10 +57,11 @@ class MingBuild
      * @param  array $clips
      * @return SWFMovie|SWFSprite
      */
-    public function build($swf, $clips = array())
+    public function build($clips = array())
     {
         $frameCount = count($clips);
 
+        $swf = $this->getSwf();
         for ($frame = 0; $frame < $frameCount; $frame++) {
 
             $swf->add(new SWFAction("stop();"));
@@ -123,17 +128,17 @@ class MingBuild
             $swf->nextFrame();
         }
 
-        return $swf;
+        $this->swf = $swf;
     }
 
     /**
-     * @param SWFMovie $swf
+     * output
      */
-    public function output(SWFMovie $swf)
+    public function output()
     {
         MingUtil::setHeader();
 
-        $swf->output();
+        $this->getSwf()->output();
 
         exit;
     }
