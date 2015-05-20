@@ -1,4 +1,4 @@
-MingFrameWork for Phalcon
+MingLibrary for Phalcon
 ======
 
 ## Version
