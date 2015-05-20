@@ -39,7 +39,6 @@ class MingUtil
     {
         $config = self::getConfig();
         return $config['swf']['dir'];
-        // return self::getConfig()->get('swf')->get('dir');
     }
 
     /**
@@ -49,7 +48,6 @@ class MingUtil
     {
         $config = self::getConfig();
         return $config['bitmap']['dir'];
-        // return self::getConfig()->get('bitmap')->get('dir');
     }
 
     /**
